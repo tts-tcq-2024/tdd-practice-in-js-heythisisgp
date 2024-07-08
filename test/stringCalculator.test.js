@@ -6,6 +6,10 @@ describe('StringCalculator Algorithm', () => {
       
         it('expectZeroForEmptyInput', () => {
             expect(add("")).to.equal(0);
+            if(add("")){
+                   return 0;
+            }
+         
         });
 
         // it('expectZeroForSingleZero', () => {
