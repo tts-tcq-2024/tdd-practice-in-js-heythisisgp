@@ -1,30 +1,31 @@
 class StringCalc {
-    static addition(numbers) {
+   static add(numbers) {
         if (numbers === '') {
             return 0;
         }
 
         let delimiters = [',', '\n'];
-        let customMatch = numbers.match(/^\/\/(\[.*?\])+\n/);
+        let customDelimitMatch = numbers.match(/^\/\/(\[.*?\])+\n/);
         
-        if (customMatch) {
-            let delimiterPart = customMatch[0];
+        if (customDelimitMatch) {
+            let delimiterPart = customDelimitMatch[0];
             let delimiterPattern = /(\[.*?\])/g;
-            let match;
+            let matchResult;
 
-            while (match = delimiterPattern.exec(delimiterPart)) {
-                delimiters.push(match[1].slice(1, -1));
+            while ((matchResult = delimiterPattern.exec(delimiterPart)) !== null) {
+                delimiters.push(matchResult[1].slice(1, -1));
             }
 
-            numbers = numbers.slice(customMatch[0].length);
+            numbers = numbers.slice(customDelimitMatch[0].length);
         }
 
-        let delimiterRegex = new RegExp('[' + delimiters.map(d => d.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('') + ']');
+        let escapedDelimiters = delimiters.map(d => d.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
+        let delimiterRegex = new RegExp(escapedDelimiters.join('|'));
         let numberArray = numbers.split(delimiterRegex).map(num => parseInt(num, 10));
         
-        let negativesValues = numberArray.filter(num => num < 0);
-        if (negativesValues.length > 0) {
-            throw new Error(`Negatives are not allowed: ${negativesValues.join(', ')}`);
+        let negativeNumber = numberArray.filter(num => num < 0);
+        if (negativeNumber.length > 0) {
+            throw new Error(`Negatives not allowed: ${negatives.join(', ')}`);
         }
 
         return numberArray
