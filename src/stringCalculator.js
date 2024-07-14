@@ -32,3 +32,14 @@ class StringCalc {
             .reduce((sum, num) => sum + (isNaN(num) ? 0 : num), 0);
     }
 }
+
+try {
+    console.log(StringCalc.add("")); // 0
+    console.log(StringCalc.add("1\n2,3")); // 6
+    console.log(StringCalc.add("//;\n1;2")); // 3
+    console.log(StringCalc.add("//[***]\n1***2***3")); // 6
+    console.log(StringCalc.add("2,1001")); // 2
+    console.log(StringCalc.add("2,-1,3,-4")); // Error: Negatives not allowed: -1, -4
+} catch (e) {
+    console.error(e.message);
+}
