@@ -25,7 +25,7 @@ class StringCalc {
         
         let negativeNumber = numberArray.filter(num => num < 0);
         if (negativeNumber.length > 0) {
-            throw new Error(`Negatives not allowed: ${negatives.join(', ')}`);
+            throw new Error(`Negatives not allowed: ${negativeNumber.join(', ')}`);
         }
 
         return numberArray
