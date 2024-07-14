@@ -1,3 +1,4 @@
+const { expect } = require('chai');
 class StringCalc {
    static add(numbers) {
         if (numbers === '') {
