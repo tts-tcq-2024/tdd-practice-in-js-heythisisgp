@@ -35,6 +35,10 @@ class StringCalc {
     }
 }
 
+module.exports = {
+    StringCalc
+};
+
 try {
     console.log(StringCalc.add("")); // 0
     console.log(StringCalc.add("1\n2,3")); // 6
