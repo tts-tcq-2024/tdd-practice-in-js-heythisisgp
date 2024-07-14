@@ -19,13 +19,13 @@ class StringCalc {
             numbers = numbers.slice(customDelimitMatch[0].length);
         }
 
-        let escapedDelimiters = delimiters.map(d => d.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
+ let escapedDelimiters = delimiters.map(d => d.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'));
         let delimiterRegex = new RegExp(escapedDelimiters.join('|'));
         let numberArray = numbers.split(delimiterRegex).map(num => parseInt(num, 10));
         
-        let negativeNumber = numberArray.filter(num => num < 0);
-        if (negativeNumber.length > 0) {
-            throw new Error(`Negatives not allowed: ${negativeNumber.join(', ')}`);
+        let negatives = numberArray.filter(num => num < 0);
+        if (negatives.length > 0) {
+            throw new Error(`Negatives not allowed: ${negatives.join(', ')}`);
         }
 
         return numberArray
