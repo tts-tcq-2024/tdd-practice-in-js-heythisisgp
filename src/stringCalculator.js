@@ -1,35 +1,40 @@
-class StringCalculator {
-    add(numbers) {
-        if (numbers === "") return 0;
-        
-        if (numbers.startsWith("//")) {
-            const delimiterLineEnd = numbers.indexOf('\n');
-            const delimiter = numbers.substring(2, delimiterLineEnd);
-            const numbersPart = numbers.substring(delimiterLineEnd + 1);
-            const numberArray = numbersPart
-                .split(delimiter)
-                .map(Number)
-                .filter(n => n <= 1000);
-            
-            const negatives = numberArray.filter(n => n < 0);
-            if (negatives.length > 0) {
-                throw new Error(`Negatives not allowed: ${negatives.join(', ')}`);
-            }
-            
-            return numberArray.reduce((a, b) => a + b, 0);
-        }
-        
-        const numberArray = numbers
-            .replace(/\n/g, ',')
-            .split(',')
-            .map(Number)
-            .filter(n => n <= 1000);
-        
-        const negatives = numberArray.filter(n => n < 0);
-        if (negatives.length > 0) {
-            throw new Error(`Negatives not allowed: ${negatives.join(', ')}`);
-        }
-        
-        return numberArray.reduce((a, b) => a + b, 0);
+function extractDelimiter(numbers) {
+    if (numbers.startsWith("//")) {
+        const parts = numbers.split("\n");
+        return {
+            delimiter: parts[0].substring(2),
+            numbers: parts[1]
+        };
     }
+    return {
+        delimiter: ",",
+        numbers: numbers
+    };
 }
+
+function splitNumbers(numbers, delimiter) {
+    const numArray = numbers.split(new RegExp(`[${delimiter},\n]`));
+    return numArray.map(num => parseInt(num)).filter(num => !isNaN(num));
+}
+
+function sumNumbers(numbers) {
+    return numbers.reduce((sum, num) => {
+        if (num <= 1000) {
+            sum += num;
+        }
+        return sum;
+    }, 0);
+}
+
+function add(numbers) {
+    if (numbers === "") {
+        return 0;
+    }
+    const { delimiter, numbers: nums } = extractDelimiter(numbers);
+    const numArray = splitNumbers(nums, delimiter);
+    return sumNumbers(numArray);
+}
+
+module.exports = {
+    add,
+};
