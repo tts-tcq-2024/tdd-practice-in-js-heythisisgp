@@ -1,51 +1,35 @@
-
-class StringCalc {
-   static add(numbers) {
-        if (numbers === '') {
-            return 0;
-        }
-
-        let delimiters = [',', '\n'];
-        let customDelimitMatch = numbers.match(/^\/\/(\[.*?\])+\n/);
+class StringCalculator {
+    add(numbers) {
+        if (numbers === "") return 0;
         
-        if (customDelimitMatch) {
-            let delimiterPart = customDelimitMatch[0];
-            let delimiterPattern = /(\[.*?\])/g;
-            let matchResult;
-
-            while ((matchResult = delimiterPattern.exec(delimiterPart)) !== null) {
-                delimiters.push(matchResult[1].slice(1, -1));
+        if (numbers.startsWith("//")) {
+            const delimiterLineEnd = numbers.indexOf('\n');
+            const delimiter = numbers.substring(2, delimiterLineEnd);
+            const numbersPart = numbers.substring(delimiterLineEnd + 1);
+            const numberArray = numbersPart
+                .split(delimiter)
+                .map(Number)
+                .filter(n => n <= 1000);
+            
+            const negatives = numberArray.filter(n => n < 0);
+            if (negatives.length > 0) {
+                throw new Error(`Negatives not allowed: ${negatives.join(', ')}`);
             }
-
-            numbers = numbers.slice(customDelimitMatch[0].length);
+            
+            return numberArray.reduce((a, b) => a + b, 0);
         }
-
- let escapedDelimiters = delimiters.map(d => d.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'));
-        let delimiterRegex = new RegExp(escapedDelimiters.join('|'));
-        let numberArray = numbers.split(delimiterRegex).map(num => parseInt(num, 10));
         
-        let negatives = numberArray.filter(num => num < 0);
+        const numberArray = numbers
+            .replace(/\n/g, ',')
+            .split(',')
+            .map(Number)
+            .filter(n => n <= 1000);
+        
+        const negatives = numberArray.filter(n => n < 0);
         if (negatives.length > 0) {
             throw new Error(`Negatives not allowed: ${negatives.join(', ')}`);
         }
-
-        return numberArray
-            .filter(num => num <= 1000)
-            .reduce((sum, num) => sum + (isNaN(num) ? 0 : num), 0);
+        
+        return numberArray.reduce((a, b) => a + b, 0);
     }
-}
-
-module.exports = {
-    StringCalc
-};
-
-try {
-    console.log(StringCalc.add("")); // 0
-    console.log(StringCalc.add("1\n2,3")); // 6
-    console.log(StringCalc.add("//;\n1;2")); // 3
-    console.log(StringCalc.add("//[***]\n1***2***3")); // 6
-    console.log(StringCalc.add("2,1001")); // 2
-    console.log(StringCalc.add("2,-1,3,-4")); // Error: Negatives not allowed: -1, -4
-} catch (e) {
-    console.error(e.message);
 }
